@@ -13,13 +13,8 @@ function MenuPage() {
 
   return (
     <div>
-      <h2>Menu</h2>
-      {user && <p>Bienvenido, {user}!</p>}
-      <ul>
-        <li><a href="/opcion1">Opción 1</a></li>
-        <li>Opción 2</li>
-        <li>Opción 3</li>
-      </ul>
+      <h2>Estas en la opcion 1</h2>
+      <h2><a href="/menu">Menu</a></h2>
       <button onClick={handleLogout}>Logout</button>
     </div>
   );

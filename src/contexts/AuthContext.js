@@ -1,13 +1,17 @@
-import React, { createContext, useState, useCallback } from 'react';
+import React, { createContext, useState, useCallback, useEffect } from 'react';
 
 export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState(() => {
+    // Intenta obtener el usuario del localStorage al cargar el componente
+    const storedUser = localStorage.getItem('user');
+    return storedUser ? storedUser : null;
+  });
 
   const login = useCallback(async (username, password) => {
     try {
-      const response = await fetch('https://urban-capybara-wr5gg96pr56r2gj5j-5000.app.github.dev/login', {
+      const response = await fetch('https://jubilant-barnacle-r46qrxjxw9p9cxx5-5000.app.github.dev/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -17,10 +21,12 @@ export const AuthProvider = ({ children }) => {
 
       if (response.ok) {
         setUser(username);
+        // Guarda el usuario en localStorage al iniciar sesión
+        localStorage.setItem('user', username);
         return true;
       } else {
         const data = await response.json();
-        console.error('Inicio con error:', data.error);
+        console.error('Error en inicio:', data.error);
         return false;
       }
     } catch (error) {
@@ -31,6 +37,15 @@ export const AuthProvider = ({ children }) => {
 
   const logout = useCallback(() => {
     setUser(null);
+    // Elimina el usuario del localStorage al cerrar sesión
+    localStorage.removeItem('user');
+  }, []);
+
+  // Efecto para limpiar el estado del usuario al desmontar el componente (opcional)
+  useEffect(() => {
+    return () => {
+      // Puedes agregar lógica adicional de limpieza aquí si es necesario
+    };
   }, []);
 
   return (
